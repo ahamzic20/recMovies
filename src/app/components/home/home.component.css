@@ -1,0 +1,81 @@
+/* Center the button */
+.center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh; /* Adjust the height as needed */
+  }
+  
+  /* Style the Material button */
+  button {
+    font-size: 16px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #3f51b5;
+  }
+  
+  /* Container for the movie cards - Flex container to display cards side by side */
+  .movie-cards-container {
+    display: flex;
+   justify-content: flex-start;  /* Align cards to the left */
+    gap: 20px;  /* Add space between the cards */
+    margin-top: 20px;
+    flex-wrap: nowrap; /* Prevent wrapping */
+  }
+  
+  /* Style individual movie card */
+  .movie-card {
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Style the material card title */
+  mat-card-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3f51b5;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  /* Style the material card content */
+  mat-card-content {
+    font-size: 14px;
+    color: #555;
+    padding: 16px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  
+  /* Responsive styling - Stack cards on small screens */
+  @media (max-width: 600px) {
+    /* Adjust button layout for small screens */
+    .center-container {
+      height: auto;
+      padding: 10px;
+    }
+  
+    /* Ensure the movie cards take full width on smaller screens */
+    .movie-cards-container {
+      flex-direction: column;  /* Stack cards vertically on small screens */
+      gap: 10px;
+    }
+  
+    .movie-card {
+      width: 100%;
+      max-width: none;  /* Allow card to take full width */
+    }
+  
+    mat-card-title {
+      font-size: 20px;
+    }
+  }
+  
