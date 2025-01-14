@@ -137,20 +137,20 @@ export class Neo4jService {
   async getMovieByFavoriteDirector(userId: number): Promise<IMovie> {
     var id = userId.toString();
     const query = `
-    MATCH (u:User {id: $id})-[:LIKED]->(m:Movie)-[:DIRECTED_BY]->(d:People)
+    MATCH (u:User {id: $id})-[:LIKED]->(m:Movie)<-[:DIRECTED_BY]-(d:People)
     WITH u, d, COUNT(m) AS movieCount
     ORDER BY movieCount DESC
-    LIMIT 1
+    LIMIT 5
     WITH u, collect(d) AS topDirectors
     WITH u, topDirectors[toInteger(rand() * size(topDirectors))] AS selectedDirector
-    MATCH (selectedDirector)<-[:DIRECTED_BY]-(movie:Movie)
+    MATCH (selectedDirector)-[:DIRECTED_BY]->(movie:Movie)
     WHERE NOT EXISTS((movie)<-[:LIKED]-(u))
     RETURN movie
     LIMIT 1
     `;
     const results = await this.runQuery(query,{id});
 
-    console.log(results);
+    console.log("EEEEJ",results);
 
     // Extract the movie properties
     return results[0].movie.properties;
@@ -159,13 +159,13 @@ export class Neo4jService {
   async getRandomMovie(userId: number): Promise<IMovie> {
     var id = userId.toString();
     const query = `
-    MATCH (u:User {id: $id})-[:LIKED]->(likedMovie:Movie)
-    MATCH (m:Movie)
-    WHERE NOT (m)<-[:LIKED]-(u)  // Ensure movie is not liked by the user
-    WITH m, rand() AS random
-    ORDER BY random
-    LIMIT 1
-    RETURN m
+      MATCH (u:User {id: $id})
+            MATCH (m:Movie)
+            WHERE NOT (m)<-[:LIKED]-(u)
+            WITH m, rand() AS random
+            ORDER BY random
+            LIMIT 1
+            RETURN m
     `;
     const results = await this.runQuery(query,{id});
 
@@ -173,6 +173,26 @@ export class Neo4jService {
 
     // Extract the movie properties
     return results[0].m.properties;
+  }
+
+  async postFavoriteMovie(title: string, userId: number): Promise<boolean> {
+    var id = userId.toString();
+    const query = `
+    MATCH (u:User {id: $id}), (m:Movie {title: $title})
+    MERGE (u)-[:LIKED]->(m)
+    RETURN u, m
+    `;
+    const results = await this.runQuery(query,{id,title});
+
+    console.log(results);
+
+    // Extract the movie properties
+      // Check if any records were returned
+      if (results && results.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
   }
   /**
    * Closes the Neo4j connection.

@@ -1,46 +1,100 @@
 <div class="center-container">
-    <button mat-raised-button color="primary" (click)="getRecomendations()">Recommend me a movie!</button>
-  </div>
-  
-  <div class="movie-cards-container" *ngIf="randomMovieByGenre || randomMovieByActor">
-    <div *ngIf="randomMovieByGenre" class="movie-card">
-      <mat-card>
-        <mat-card-title>{{ randomMovieByGenre.title }}</mat-card-title>
-        <mat-card-content>
-          <p>{{ randomMovieByGenre.rating }}</p>
-          <!-- Add more movie details here if needed -->
-        </mat-card-content>
-      </mat-card>
-    </div>
-  
-    <div *ngIf="randomMovieByActor" class="movie-card">
-      <mat-card>
-        <mat-card-title>{{ randomMovieByActor.title }}</mat-card-title>
-        <mat-card-content>
-          <p>{{ randomMovieByActor.rating }}</p>
-          <!-- Add more movie details here if needed -->
-        </mat-card-content>
-      </mat-card>
-    </div>
+  <button
+    mat-raised-button
+    color="primary"
+    class="main-button"
+    (click)="getRecomendations()"
+  >
+    Recommend me a movie!
+  </button>
+</div>
 
-    <div *ngIf="randomMovieByDirector" class="movie-card">
-        <mat-card>
-          <mat-card-title>{{ randomMovieByDirector.title }}</mat-card-title>
-          <mat-card-content>
-            <p>{{ randomMovieByDirector.rating }}</p>
-            <!-- Add more movie details here if needed -->
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <div *ngIf="randomMovie" class="movie-card">
-        <mat-card>
-          <mat-card-title>{{ randomMovie.title }}</mat-card-title>
-          <mat-card-content>
-            <p>{{ randomMovie.rating }}</p>
-            <!-- Add more movie details here if needed -->
-          </mat-card-content>
-        </mat-card>
-      </div>
-  </div>
+<div
+  class="movie-cards-container"
+  *ngIf="randomMovieByGenre || randomMovieByActor || randomMovieByDirector || randomMovie"
+>
   
+  <!-- Movie by Genre -->
+  <div *ngIf="randomMovieByGenre" class="movie-card">
+    <mat-card>
+      <mat-card-title>{{ randomMovieByGenre.title }}</mat-card-title>
+      <mat-card-content>
+        <p>Rating: {{ randomMovieByGenre.rating }}</p>
+        <!-- Add more movie details here if needed -->
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-button
+          color="accent"
+          class="like-button"
+          (click)="likeMovie(randomMovieByGenre)"
+        >
+          Like
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Movie by Actor -->
+  <div *ngIf="randomMovieByActor" class="movie-card">
+    <mat-card>
+      <mat-card-title>{{ randomMovieByActor.title }}</mat-card-title>
+      <mat-card-content>
+        <p>Rating: {{ randomMovieByActor.rating }}</p>
+        <!-- Add more movie details here if needed -->
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-button
+          color="accent"
+          class="like-button"
+          (click)="likeMovie(randomMovieByActor)"
+        >
+          Like
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Movie by Director -->
+  <div *ngIf="randomMovieByDirector" class="movie-card">
+    <mat-card>
+      <mat-card-title>{{ randomMovieByDirector.title }}</mat-card-title>
+      <mat-card-content>
+        <p>Rating: {{ randomMovieByDirector.rating }}</p>
+        <!-- Add more movie details here if needed -->
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-button
+          color="accent"
+          class="like-button"
+          (click)="likeMovie(randomMovieByDirector)"
+        >
+          Like
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Random Movie -->
+  <div *ngIf="randomMovie" class="movie-card">
+    <mat-card>
+      <mat-card-title>{{ randomMovie.title }}</mat-card-title>
+      <mat-card-content>
+        <p>Rating: {{ randomMovie.rating }}</p>
+        <!-- Add more movie details here if needed -->
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-button
+          color="accent"
+          class="like-button"
+          (click)="likeMovie(randomMovie)"
+        >
+          Like
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

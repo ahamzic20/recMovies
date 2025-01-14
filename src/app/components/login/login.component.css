@@ -1,0 +1,109 @@
+/* Container to center the login card */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Vertically centers the card */
+    padding: 20px;
+    background-color: #f0f2f5; /* Light background for contrast */
+  }
+  
+  /* Style the Material card */
+  .login-container mat-card {
+    width: 100%;
+    max-width: 400px; /* Sets a maximum width for larger screens */
+    background-color: #ffffff; /* White background for the card */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+    border-radius: 12px; /* Rounded corners */
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  /* Hover effect for the card */
+  .login-container mat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Style the card title */
+  .login-container mat-card-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #3f51b5; /* Primary color for consistency */
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  /* Style the form fields */
+  .full-width {
+    width: 100%;
+  }
+  
+  /* Style the input fields */
+  mat-form-field {
+    margin-bottom: 20px;
+  }
+  
+  /* Style the input labels */
+  mat-form-field .mat-form-field-label {
+    color: #3f51b5;
+    font-weight: 500;
+  }
+  
+  /* Style the input text */
+  mat-form-field input {
+    font-size: 16px;
+    color: #555;
+  }
+  
+  /* Style the submit button container */
+  .actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  /* Style the submit button */
+  .actions button {
+    font-size: 18px; /* Increased font size */
+    padding: 14px 28px; /* Increased padding */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    background-color: #3f51b5; /* Primary color */
+    color: #fff; /* White text for readability */
+  }
+  
+  /* Hover effect for the submit button */
+  .actions button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    background-color: #303f9f; /* Darker shade on hover */
+  }
+  
+  /* Responsive styling for smaller screens */
+  @media (max-width: 600px) {
+    /* Adjust container height and padding */
+    .login-container {
+      min-height: auto;
+      padding: 10px;
+    }
+  
+    /* Adjust card title font size */
+    .login-container mat-card-title {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+  
+    /* Adjust input field font size */
+    mat-form-field input {
+      font-size: 14px;
+    }
+  
+    /* Adjust submit button font size and padding */
+    .actions button {
+      font-size: 16px;
+      padding: 12px 24px;
+    }
+  }
+  
