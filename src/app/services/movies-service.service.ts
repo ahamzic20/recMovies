@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import neo4j, { Driver, Session } from 'neo4j-driver';
+import neo4j, { Driver, resultTransformers, Session } from 'neo4j-driver';
 import { IMovie } from '../models/imovie';
 
 @Injectable({
@@ -7,17 +7,14 @@ import { IMovie } from '../models/imovie';
 })
 export class Neo4jService {
   private driver: Driver | null = null;
-  private readonly uri: string = 'bolt://localhost:7687'; // Update with your Neo4j instance
-  private readonly username: string = 'neo4j'; // Update with your username
-  private readonly password: string = 'bsf12De53'; // Update with your password
+  private readonly uri: string = 'bolt://localhost:7687';
+  private readonly username: string = 'neo4j';
+  private readonly password: string = 'bsf12De53';
 
   constructor() {
     this.connect();
   }
 
-  /**
-   * Initializes the connection to the Neo4j database.
-   */
   private connect() {
     try {
       this.driver = neo4j.driver(
@@ -54,7 +51,6 @@ export class Neo4jService {
     const query = 'MATCH (n:Movie) RETURN n';
     const results = await this.runQuery(query);
 
-    // Extract the movie properties
     return results.map((record) => record.n.properties);
   }
 
@@ -65,9 +61,8 @@ export class Neo4jService {
       WHERE u.id = $id
       RETURN m
     `;
-    const results = await this.runQuery(query,{id});
+    const results = await this.runQuery(query, { id });
 
-    // Extract the movie properties
     return results.map((record) => record.m.properties);
   }
 
@@ -77,13 +72,23 @@ export class Neo4jService {
       RETURN u.id AS userId
     `;
     const results = await this.runQuery(query, { username, password });
-
-    // If the result contains any records, the user exists and credentials are valid.
     if (results.length > 0) {
-      return results[0].userId; // Return the userId (assuming 'id' is the property you want)
+      return results[0].userId;
     } else {
-      return 0; // Return null if user not found or credentials invalid
+      return 0;
     }
+  }
+
+  async registerUser(username: string, name: string, lastName: string, password: string) {
+
+    const query = `
+     CREATE (u:User {username: $username, name: $name, lastName: $lastName, password: $password}) 
+     RETURN u
+    `;
+    const results = await this.runQuery(query, { username, name, lastName, password });
+
+    console.log(results);
+    return results[0].records.length > 0 ? 1 : 0;
   }
 
 
@@ -104,11 +109,10 @@ export class Neo4jService {
       ORDER BY rand()
       LIMIT 1
     `;
-    const results = await this.runQuery(query,{id});
+    const results = await this.runQuery(query, { id });
 
     console.log(results);
 
-    // Extract the movie properties
     return results[0].m.properties;
   }
 
@@ -126,11 +130,10 @@ export class Neo4jService {
       RETURN movie
       LIMIT 1
     `;
-    const results = await this.runQuery(query,{id});
+    const results = await this.runQuery(query, { id });
 
     console.log(results);
 
-    // Extract the movie properties
     return results[0].movie.properties;
   }
 
@@ -148,11 +151,10 @@ export class Neo4jService {
     RETURN movie
     LIMIT 1
     `;
-    const results = await this.runQuery(query,{id});
+    const results = await this.runQuery(query, { id });
 
-    console.log("EEEEJ",results);
+    console.log("EEEEJ", results);
 
-    // Extract the movie properties
     return results[0].movie.properties;
   }
 
@@ -167,11 +169,10 @@ export class Neo4jService {
             LIMIT 1
             RETURN m
     `;
-    const results = await this.runQuery(query,{id});
+    const results = await this.runQuery(query, { id });
 
     console.log(results);
 
-    // Extract the movie properties
     return results[0].m.properties;
   }
 
@@ -182,21 +183,17 @@ export class Neo4jService {
     MERGE (u)-[:LIKED]->(m)
     RETURN u, m
     `;
-    const results = await this.runQuery(query,{id,title});
+    const results = await this.runQuery(query, { id, title });
 
     console.log(results);
 
-    // Extract the movie properties
-      // Check if any records were returned
-      if (results && results.length > 0) {
-        return true;
+    if (results && results.length > 0) {
+      return true;
     } else {
-        return false;
+      return false;
     }
   }
-  /**
-   * Closes the Neo4j connection.
-   */
+
   async close() {
     if (this.driver) {
       await this.driver.close();
