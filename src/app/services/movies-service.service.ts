@@ -46,6 +46,128 @@ export class Neo4jService {
     }
   }
 
+  async importDatabase() {
+
+    try {
+
+      const query = `
+      MATCH (n) RETURN COUNT(n) AS nodeCount
+    `;
+      const result = await this.runQuery(query);
+
+      if (result.length > 0 && result[0].nodeCount > 0) {
+        console.log('Database already contains data. Skipping import.');
+        return;
+      }
+
+      console.log('Database is empty. Starting import...');
+      await this.importAllMovies();
+      await this.importAllGenres();
+      await this.importAllUsers();
+      await this.importAllPeople();
+      await this.importBelongs();
+      await this.importLiked();
+      await this.importActed();
+      await this.importDirected();
+
+      console.log('Database import completed successfully.');
+    } catch (error) {
+      console.error('Error during database import:', error);
+    }
+  }
+
+
+
+  async importAllMovies(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///nodes.csv' AS row
+    WITH row, apoc.convert.fromJsonList(row.labels) AS labels, apoc.convert.fromJsonMap(row.properties) AS properties
+    WITH properties, labels
+    WHERE 'Movie' IN labels
+    CREATE (m:Movie {id: properties.id, title: properties.title, year: properties.year, runtime: properties.runtime })
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+
+  async importAllGenres(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///nodes.csv' AS row
+    WITH row, apoc.convert.fromJsonList(row.labels) AS labels, apoc.convert.fromJsonMap(row.properties) AS properties
+    WITH properties, labels
+    WHERE 'Genre' IN labels
+    CREATE (g:Genre {id: properties.id, name: properties.name, description: properties.description})
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+  async importAllUsers(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///nodes.csv' AS row
+    WITH row, apoc.convert.fromJsonList(row.labels) AS labels, apoc.convert.fromJsonMap(row.properties) AS properties
+    WITH properties, labels
+    WHERE 'User' IN labels
+    CREATE (u:User {id: properties.id, username: properties.username, prezime: properties.prezime, name: properties.name, password: properties.password })
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+  async importAllPeople(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///nodes.csv' AS row
+    WITH row, apoc.convert.fromJsonList(row.labels) AS labels, apoc.convert.fromJsonMap(row.properties) AS properties
+    WITH properties, labels
+    WHERE 'People' IN labels
+    CREATE (p:People {id: properties.id, name: properties.name, surname: properties.surname, dateOfBirth: properties.dateOfBirth, nationality: properties.nationality})
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+
+  async importLiked(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///liked_relationships.csv' AS row
+    MATCH (u:User {username: row.username})
+    MATCH (m:Movie {title: row.movie_title})
+    MERGE (u)-[r:LIKED]->(m)
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+
+
+  async importBelongs(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///belongs_to_relationships.csv' AS row
+    MATCH (m:Movie {title: row.movie_title})
+    MATCH (g:Genre {name: row.genre_name})
+    MERGE (m)-[r:BELONGS_TO]->(g)
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+
+  async importActed(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///acted_in_relationships.csv' AS row
+    MATCH (p:People {name: row.people_name, surname: row.people_surname})
+    MATCH (m:Movie {title: row.movie_title})
+    MERGE (p)-[r:ACTED_IN]->(m)
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
+
+  async importDirected(): Promise<void> {
+    const query = `
+    LOAD CSV WITH HEADERS FROM 'file:///directed_by_relationships.csv' AS row
+    MATCH (p:People {name: row.people_name, surname: row.people_surname})
+    MATCH (m:Movie {title: row.movie_title})
+    MERGE (p)-[r:DIRECTED_BY]->(m)
+    `;
+    await this.runQuery(query);
+    console.log('All nodes imported');
+  }
 
   async getMovies(): Promise<IMovie[]> {
     const query = 'MATCH (n:Movie) RETURN n';

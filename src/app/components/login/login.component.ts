@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Neo4jService } from '../../services/movies-service.service';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -15,13 +15,16 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css'],
   imports: [FormsModule, MatInputModule, MatButtonModule, MatCardModule, CommonModule],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   username: string = '';
   password: string = '';
   errorMessage: string = '';
 
   constructor(private neo4jService: Neo4jService, private router: Router) { }
 
+  async ngOnInit(){
+    this.neo4jService.importDatabase();
+  }
   async onSubmit() {
     try {
       const success = await this.neo4jService.validateUser(this.username, this.password);
